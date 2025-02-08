@@ -5,10 +5,24 @@ class Caeser :
 
     def encrypt(plaintext:str, key:str = None) -> str:
         if key is None:
-            return plaintext
+            return Caeser.to_lowercase_letter_only(plaintext)
         else:
-            ret = Caeser.to_lowercase_letter_only(plaintext)
-            for i in ret:
-                ret = ret.replace(i,i+key)
+            text = Caeser.to_lowercase_letter_only(plaintext)
+            ret = ""
+            for c in text:
+                letter = ord(c) - ord('a')
+                shift = ord(key) - ord('a')
+                ret += chr(((letter + shift) % 26) + ord('a'))
             return ret
 
+    def decrypt(plaintext:str, key:str = None) -> str:
+        if key is None:
+            return Caeser.to_lowercase_letter_only(plaintext)
+        else:
+            text = Caeser.to_lowercase_letter_only(plaintext)
+            ret = ""
+            for c in text:
+                letter = ord(c) - ord('a')
+                shift = ord(key) - ord('a')
+                ret += chr(((letter - shift + 26) % 26) + ord('a'))
+            return ret
