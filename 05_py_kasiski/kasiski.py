@@ -1,6 +1,8 @@
 import collections
+import itertools
 from collections.abc import Collection
 from typing import List
+
 
 class Caesar:
     """
@@ -26,10 +28,11 @@ class Caesar:
         Verschlüsselt den gegebenen Text mit dem angegebenen Schlüssel.
 
         >>> Caesar.encrypt("hello", "b")
-        'jgnnq'
+        'ifmmp'
         >>> Caesar.encrypt("hello")
         'hello'
         """
+
         if key is None:
             return Caesar.to_lowercase_letter_only(plaintext)
         else:
@@ -38,7 +41,7 @@ class Caesar:
             for c in text:
                 letter = ord(c) - ord('a')
                 shift = ord(key) - ord('a')
-                ret += chr(((letter + shift) % 26) + ord('a')+1)
+                ret += chr(((letter + shift) % 26) + ord('a'))
             return ret
 
     @staticmethod
@@ -46,7 +49,7 @@ class Caesar:
         """
         Entschlüsselt den gegebenen Text mit dem angegebenen Schlüssel.
 
-        >>> Caesar.decrypt("jgnnq", "b")
+        >>> Caesar.decrypt("ifmmp", "b")
         'hello'
         >>> Caesar.decrypt("hello")
         'hello'
@@ -59,7 +62,7 @@ class Caesar:
             for c in text:
                 letter = ord(c) - ord('a')
                 shift = ord(key) - ord('a')
-                ret += chr(((letter - shift + 26) % 26) + ord('a')-1)
+                ret += chr(((letter - shift) % 26) + ord('a'))
             return ret
 
     @staticmethod
@@ -91,16 +94,70 @@ class Caesar:
         list_counter = [key for key, value in counter_sorted]
         return list_counter[:elements]
 
-
     import doctest
 
     if __name__ == "__main__":
         doctest.testmod()
 
 
+class Vigenere:
+    def to_lowercase_letter_only(plaintext: str) -> str:
+        """
+        Wandelt den gegebenen Text in Kleinbuchstaben um und entfernt alle Nicht-Buchstaben.
 
+        >>> Caesar.to_lowercase_letter_only("Hello, World!")
+        'helloworld'
+        >>> Caesar.to_lowercase_letter_only("Python 3.9")
+        'python'
+        """
+        ret = plaintext.lower()
+        return "".join(i for i in ret if i.isalpha())
 
+    def cncrypt(selfplaintext: str, key: str = None) -> str:
 
+        """
+        Verschlüsselt den gegebenen Text mit einem String-Key mithilfe der Viginere-Verschlüsselung
+        :param key: (sich evtl. wiederholender) Verschlüsselungsstring
+        :return: verschlüsselter Text
 
+        >>> Vigenere.cncrypt("sigmaboy", "apfel")
+        'sxlqlbdd'
 
+        >>> Vigenere.cncrypt("sigmaboy", "aaaaa")
+        'sigmaboy'
+        """
 
+        text = Vigenere.to_lowercase_letter_only(selfplaintext)
+        ret = ""
+        key_cycle = itertools.cycle(key)
+
+        for i in text:
+
+            if i.isalpha():
+                ret += Caesar.encrypt(i, next(key_cycle))
+
+        return ret
+
+    def decrypt(selfplaintext: str, key: str = None) -> str:
+        """
+        Entschlüsselt einen mit dem Vigenere-Algorithmus verschlüsselten Text
+        :param key: der (sich eventuell wiederholende) Entschlüsselungskey
+        :return: entschlüsselter Plaintext
+
+        >>> Vigenere.decrypt("sxlqlbdd", "apfel")
+        'sigmaboy'
+
+        >>> Vigenere.decrypt("sxqlbdd", "aaaaa")
+        'sxqlbdd'
+        """
+
+        text = Vigenere.to_lowercase_letter_only(selfplaintext)
+        ret = ""
+        key_cycle = itertools.cycle(key)
+
+        for i in text:
+
+            if i.isalpha():
+                ret += Caesar.decrypt(i, next(key_cycle))
+
+        return ret
