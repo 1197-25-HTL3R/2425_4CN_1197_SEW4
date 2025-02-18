@@ -1,7 +1,7 @@
 import collections
 import itertools
 from collections.abc import Collection
-from typing import List
+from typing import List, Set, Tuple
 
 
 class Caesar:
@@ -101,6 +101,8 @@ class Caesar:
 
 
 class Vigenere:
+
+    @staticmethod
     def to_lowercase_letter_only(plaintext: str) -> str:
         """
         Wandelt den gegebenen Text in Kleinbuchstaben um und entfernt alle Nicht-Buchstaben.
@@ -113,6 +115,7 @@ class Vigenere:
         ret = plaintext.lower()
         return "".join(i for i in ret if i.isalpha())
 
+    @staticmethod
     def cncrypt(selfplaintext: str, key: str = None) -> str:
 
         """
@@ -138,6 +141,7 @@ class Vigenere:
 
         return ret
 
+    @staticmethod
     def decrypt(selfplaintext: str, key: str = None) -> str:
         """
         Entschlüsselt einen mit dem Vigenere-Algorithmus verschlüsselten Text
@@ -161,3 +165,86 @@ class Vigenere:
                 ret += Caesar.decrypt(i, next(key_cycle))
 
         return ret
+
+
+class Kasiski:
+    def __init__(self, crypttext: str = ""):
+        self.crypttext = Vigenere.to_lowercase_letter_only(crypttext)
+
+    def allpos(self, text: str, teilstring: str) -> List[int]:
+        """Berechnet die Positionen von teilstring in text.
+        Usage examples:
+        >>> k = Kasiski()
+        >>> k.allpos("heissajuchei, ein ei", "ei")
+        [1, 10, 14, 18]
+        >>> k.allpos("heissajuchei, ein ei", "hai")
+        []"""
+
+        ret = []
+        start = 0
+
+        while True:
+            pos = text.find(teilstring, start)
+            if pos == -1:
+                break
+            ret.append(pos)
+            start = pos + 1
+
+        return ret
+
+    def alldist(self, text:str, teilstring:str) -> Set[int]:
+        """Berechnet die Abstände zwischen allen Vorkommnissen des Teilstrings im verschlüsselten Text
+        und gibt diese sortiert zurück.
+        Usage examples:
+        >>> k = Kasiski()
+        >>> k.alldist("heissajuchei, ein ei", "ei")
+        {4, 8, 9, 13, 17}
+        >>> k.alldist("heissajuchei, ein ei", "hai")
+        set()"""
+
+        ret = set()
+        positions = self.allpos(text, teilstring)
+
+        num = itertools.cycle(positions)
+
+        for i in positions:
+            cycle_end = len(positions)
+            while cycle_end > 0:
+                ret.add(abs(next(num)-i))
+                cycle_end -= 1
+
+        ret = {x for x in ret if x != 0}
+
+        return ret
+
+    def dist_n_tuple(self, text:str, laenge:int) -> Set[Tuple[str, int]]:
+        """Überprüft alle Teilstrings aus text mit der gegebenen laenge und liefert ein Set
+        mit den Abständen aller Wiederholungen der Teilstrings in text.
+        Usage examples:
+        >>> k = Kasiski()
+        >>> k.dist_n_tuple("heissajuchei", 2) == {('ei', 9), ('he', 9)}
+        True
+        >>> k.dist_n_tuple("heissajuchei", 3) == {('hei', 9)}
+        True
+        >>> k.dist_n_tuple("heissajuchei", 4) == set()
+        True
+        >>> k.dist_n_tuple("heissajucheieinei", 2) == \
+        {('ei', 5), ('ei', 14), ('ei', 3), ('ei', 9), ('ei', 11), ('he', 9), ('ei', 2)}
+        True
+        """
+
+        ret: Set[Tuple[str, int]] = set()
+
+        for i in range (0, len(text)-(laenge-1)):
+            sub_text = text[i:i+laenge]
+
+            if len(self.allpos(text, sub_text)) >= 2:
+                all_dist = self.alldist(text, sub_text)
+                for j in all_dist:
+                    ret.add((sub_text, j))
+
+        return ret
+
+
+
+
