@@ -94,11 +94,11 @@ class Caesar:
 
         distances: dict[str, int] = {char: 0 for char in 'abcdefghijklmnopqrstuvwxyz'}
 
-        for key in range (0, 26):
-            for char in range (0, 26):
-                keys_frequency = Caesar.decrypt(crypttext, chr(key + ord('a'))).count(chr(char + ord('a'))) / len(crypttext) * 100
-                distances[chr(key + ord('a'))] += ((keys_frequency-letters[chr(char + ord('a'))]) ** 2)
-
+        for key in range(0, 26):
+            for char in range(0, 26):
+                keys_frequency = Caesar.decrypt(crypttext, chr(key + ord('a'))).count(chr(char + ord('a'))) / len(
+                    crypttext) * 100
+                distances[chr(key + ord('a'))] += ((keys_frequency - letters[chr(char + ord('a'))]) ** 2)
 
         ret = sorted(distances.items(), key=lambda item: item[1])
 
@@ -345,4 +345,30 @@ class Kasiski:
         return key_ret
 
 
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
 
+    example_text = (
+        "Es war einmal in einem alten, ehrwürdigen Land, "
+        "wo die Worte der Dichter und Denker wie kostbare Juwelen behandelt wurden. "
+        "In den langen, ehrfurchtgebietenden Zeilen eines Werkes, das aus den Archiven von Projekt Gutenberg stammt, "
+        "verbirgt sich Weisheit und Schönheit, die den Geist beflügeln und die Seele berühren."
+    )
+
+    key = "apfel"
+
+    encrypted = Vigenere.cncrypt(example_text, key)
+    print("Verschlüsselter Text:")
+    print(encrypted)
+    print("\n" + "-" * 60 + "\n")
+
+    k = Kasiski(encrypted)
+    deciphered_key = k.crack_key(3)
+    print("Gefundener Schlüssel:", deciphered_key)
+    print("\n" + "-" * 60 + "\n")
+
+    # Entschlüsseln mit dem gefundenen Schlüssel
+    decrypted = Vigenere.decrypt(encrypted, deciphered_key)
+    print("Entschlüsselter Text:")
+    print(decrypted)
