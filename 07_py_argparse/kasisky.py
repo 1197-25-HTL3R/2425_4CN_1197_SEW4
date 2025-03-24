@@ -126,17 +126,17 @@ class Vigenere:
         return "".join(i for i in ret if i.isalpha())
 
     @staticmethod
-    def cncrypt(selfplaintext: str, key: str = None) -> str:
+    def encrypt(selfplaintext: str, key: str = None) -> str:
 
         """
         Verschlüsselt den gegebenen Text mit einem String-Key mithilfe der Viginere-Verschlüsselung
         :param key: (sich evtl. wiederholender) Verschlüsselungsstring
         :return: verschlüsselter Text
 
-        >>> Vigenere.cncrypt("sigmaboy", "apfel")
+        >>> Vigenere.encrypt("sigmaboy", "apfel")
         'sxlqlbdd'
 
-        >>> Vigenere.cncrypt("sigmaboy", "aaaaa")
+        >>> Vigenere.encrypt("sigmaboy", "aaaaa")
         'sigmaboy'
         """
 
@@ -328,7 +328,7 @@ class Kasiski:
     def crack_key(self, length: int) -> str:
         """
         >>> sample = "diesisteineinfacherlangerbeispieltextgdrgdgrdhddiesisteineinfacherlangerbeispieltextfeqgwgwgdiesisteineinfacherlangerbeispieltext"
-        >>> encrypted = Vigenere.cncrypt(sample, "apfel")
+        >>> encrypted = Vigenere.encrypt(sample, "apfel")
         >>> k = Kasiski(encrypted)
         >>> k.crack_key(3)
         'apfel'
@@ -358,7 +358,7 @@ if __name__ == "__main__":
 
     key = "apfel"
 
-    encrypted = Vigenere.cncrypt(example_text, key)
+    encrypted = Vigenere.encrypt(example_text, key)
     print("Verschlüsselter Text:")
     print(encrypted)
     print("\n" + "-" * 60 + "\n")

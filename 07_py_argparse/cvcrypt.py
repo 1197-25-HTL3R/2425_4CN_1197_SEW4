@@ -56,6 +56,36 @@ except Exception:
     print(args.infile + "Unexpected error:", sys.exc_info()[0], file=sys.stderr)
     exit(1)
 
+if args.cipher == "caesar" or args.cipher == "c":
+    print("Caesar")
+    if args.encrypt:
+        output = kasisky.Caesar.encrypt(input_file, key)
+    else:
+        output = kasisky.Caesar.decrypt(input_file, key)
+else:
+    if args.encrypt:
+        output = kasisky.Vigenere.encrypt(input_file, key)
+    else:
+        output = kasisky.Vigenere.decrypt(input_file, key)
+
+try:
+    with open(args.outfile, "w") as file:
+        file.write(output)
+
+    if args.verbose:
+        print("Encrypting " + ("Caeser" if args.cipher == "caesar" or args.cipher == "c" else "Vigenere") + "from file " + args.infile + " to file " + args.outfile  + " with key = " + key)
+except FileNotFoundError:
+    print(args.outfile + ": No such file or directory", file=sys.stderr)
+    exit(1)
+except PermissionError:
+    print(args.outfile + ": Permission denied", file=sys.stderr)
+    exit(1)
+except IsADirectoryError:
+    print(args.outfile + ": Is a directory", file=sys.stderr)
+    exit(1)
+except Exception:
+    print("An error occurred while writing the output file", file=sys.stderr)
+    exit(1)
 
 
 
