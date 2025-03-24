@@ -1,6 +1,22 @@
 __author__ = "Danijel Stamenkovic"
 import argparse
+import sys
+
 import kasisky
+
+"""
+cvcrack.py – Caesar & Vigenere key cracker by STA / HTL Rennweg
+
+Usage:
+    python cvcrack.py [options] infile
+
+Options:
+    -h, --help            Zeigt diese Hilfe an und beendet das Programm.
+    -c {caesar,c,vigenere,v}, --cipher {caesar,c,vigenere,v}
+                          Zu verwendende Chiffre (Standard: caesar).
+    -v, --verbose         Detaillierte Ausgabe.
+    -q, --quiet           Nur den wahrscheinlichsten Key ausgeben.
+"""
 
 parser = argparse.ArgumentParser(description="Kasiski Argparser by STA / HTL Rennweg")
 parser.add_argument("infile", help="The path of the input file", type=str)
@@ -18,4 +34,28 @@ parser.add_argument("-c","--cipher", help="The used encryption", choices=["caesa
 parser.add_argument("-k","--key", help="The used encryption key")
 
 args = parser.parse_args()
+
+if args.key:
+    key = args.key
+else:
+    print("No key argument used", file=sys.stderr)
+    exit(1)
+
+try:
+    input_file = open(args.infile).read()
+except FileNotFoundError:
+    print(args.infile + "File not found", file=sys.stderr)
+    exit(1)
+except PermissionError:
+    print(args.infile + "Permission denied", file=sys.stderr)
+    exit(1)
+except IsADirectoryError:
+    print(args.infile + "Directory not found", file=sys.stderr)
+    exit(1)
+except Exception:
+    print(args.infile + "Unexpected error:", sys.exc_info()[0], file=sys.stderr)
+    exit(1)
+
+
+
 
