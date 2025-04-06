@@ -1,6 +1,7 @@
 __author__ = "Danijel Stamenkovic"
 
-from typing import List, Tuple
+import string
+from typing import List, Tuple, Set
 
 
 def read_all_words(filename: str) -> set[str]:
@@ -35,10 +36,38 @@ def split_word(wort:str) -> List[Tuple[str, str]]:
         [('', 'abc'), ('a', 'bc'), ('ab', 'c'), ('abc', '')]
         """
     ret: List[Tuple[str, str]] = []
-
-    for i in range(len(wort)+1):
-        ret += [(wort[0:i], wort[i:len(wort)])]
+    ret = [(wort[:i], wort[i:]) for i in range(len(wort) + 1)]
 
     return ret
 
+def edit1(wort:str) -> Set[str]:
+    """
+        Erzeugt alle möglichen Wörter, die durch genau einen Editierfehler (Edit-Distanz 1)
+        aus dem gegebenen Wort resultieren. Es werden dabei vier Operationen berücksichtigt:
+
+          - Deletion: Entferne ein Zeichen.
+          - Transposition: Vertausche zwei benachbarte Zeichen.
+          - Replacement: Ersetze ein Zeichen durch einen anderen.
+          - Insertion: Füge ein Zeichen ein.
+
+        Doctest (gekürzt):
+        >>> "ac" in edit1("abc") and "acb" in edit1("abc")
+        True
+        """
+
+    letters = string.ascii_lowercase
+
+    # a)
+    delete = {head + tail[1:] for head, tail in split_word(wort) if tail}
+
+    # b)
+    swap = {head + tail[1] +  tail[0] + tail[2:] for head, tail in split_word(wort) if len(tail) > 1}
+
+    # c)
+    replace = {head + c + tail[1:] for head, tail in split_word(wort) if tail for c in letters if c != tail[0]}
+
+    # d)
+    insert = {head + e + tail for head, tail in split_word(wort) if tail for e in letters}
+
+    return delete | swap | replace | insert
 
