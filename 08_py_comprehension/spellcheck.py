@@ -106,3 +106,14 @@ def correct(wort:str, alle_woerter:List[str]) -> Set[str]:
 
     return set()
 
+
+if __name__ == '__main__':
+    import doctest
+
+    doctest.testmod()
+
+    woerter = {"aalquappe", "aalsuppe", "aalsuppen", "absude", "alse", "lupe", "suppe", "ursuppe"}
+    print("Korrektur für 'Aalsuppe':", sorted(correct("Aalsuppe", list(woerter))))
+    print("Korrektur für 'Alsuppe':", sorted(correct("Alsuppe", list(woerter))))
+    print("Korrektur für 'Alsupe':", sorted(correct("Alsupe", list(woerter))))
+
