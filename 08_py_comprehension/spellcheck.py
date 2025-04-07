@@ -71,3 +71,13 @@ def edit1(wort:str) -> Set[str]:
 
     return delete | swap | replace | insert
 
+def edit1_good(wort:str, alle_woerter:List[str]) -> Set[str]:
+    """
+      Filtert edit1(wort) und gibt nur Wörter zurück, die im Wörterbuch (alle_woerter) enthalten sind.
+
+      >>> sorted(edit1_good("pyton", ["python", "pylon", "pyton"]))
+      ['pylon', 'python']
+    """
+
+    dictionary = set(alle_woerter)
+    return edit1(wort) & dictionary
