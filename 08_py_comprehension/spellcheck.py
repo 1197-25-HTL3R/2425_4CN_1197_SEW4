@@ -81,3 +81,16 @@ def edit1_good(wort:str, alle_woerter:List[str]) -> Set[str]:
 
     dictionary = set(alle_woerter)
     return edit1(wort) & dictionary
+
+def edit2_good(wort:str, alle_woerter:List[str]) -> Set[str]:
+    """
+        Liefert alle Wörter mit Edit-Distanz 2, die im Wörterbuch (alle_woerter) enthalten sind.
+
+        >>> sorted(edit2_good("pyton", ["python", "pylon", "pyton", "ptyon"]))
+        ['ptyon']
+    """
+
+    dictionary = set(alle_woerter)
+    return {edit2 for edit in edit1(wort) for edit2 in edit1(edit)} & dictionary
+
+
