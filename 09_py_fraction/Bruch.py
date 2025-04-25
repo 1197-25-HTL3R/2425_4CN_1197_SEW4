@@ -6,6 +6,5 @@ def __init__(self, z=0, n=1):
     self.z = int(z)
     self.n = int(n)
 
-def __str__(self):
-    return f"{self.z}/{self.n}"
+
 
