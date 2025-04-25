@@ -37,11 +37,15 @@ class Bruch:
             return 1
 
         while True:
-            r = a / b
+            r = a % b
             if r == 0:
                 return b
             a = b
             b = r
 
+    def kuerzen(self):
+        ggt = self.ggt(self.z, self.n)
+        div = self.n / ggt
 
+        return Bruch(self.z/div,ggt)
 
