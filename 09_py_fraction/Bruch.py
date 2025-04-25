@@ -30,3 +30,18 @@ class Bruch:
         z = self.z * b.n
         n = self.n * b.z
         return Bruch(z, n)
+
+    @staticmethod
+    def ggt(a:int, b:int):
+        if a == 0 or b == 0:
+            return 1
+
+        while True:
+            r = a / b
+            if r == 0:
+                return b
+            a = b
+            b = r
+
+
+
