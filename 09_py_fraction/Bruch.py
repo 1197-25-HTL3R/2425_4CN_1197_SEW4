@@ -11,4 +11,22 @@ class Bruch:
     def __str__(self):
         return f"{self.z}/{self.n}"
 
+    def add(self, b):
+        z = self.z * b.n + b.z * self.n
+        n = self.n * b.n
+        return Bruch(z, n)
 
+    def sub(self, b):
+        z = self.z * b.n - b.z * self.n
+        n = self.n * b.n
+        return Bruch(z, n)
+
+    def mult(self, b):
+        z = self.z * b.z
+        n = self.n * b.n
+        return Bruch(z, n)
+
+    def div(self, b):
+        z = self.z * b.n
+        n = self.n * b.z
+        return Bruch(z, n)
