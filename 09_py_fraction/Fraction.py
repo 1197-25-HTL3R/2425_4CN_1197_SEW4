@@ -84,7 +84,7 @@ class Fraction:
             raise ValueError('n cannot be zero')
 
         if n < 0:
-            z, n = -z, n
+            z, n = -z, -n
 
         self._z = int(z)
         self._n = int(n)
@@ -121,11 +121,11 @@ class Fraction:
     def __str__(self):
         z, n = self._z, self._n
         if abs(z) >= n:
-            ganz = int (z / n)
+            whole = abs(z) // n * (1 if z > 0 else -1)
             rest = abs(z) % n
             if rest:
-                return f"{ganz} {rest}/{n}"
-            return str(ganz)
+                return f"{whole} {rest}/{n}"
+            return str(whole)
         return f"{z}/{n}"
 
     def __add__(self, b):
@@ -138,7 +138,9 @@ class Fraction:
         return NotImplemented
 
     def __radd__(self, b):
-        return self.__add__(b)
+        if isinstance(b, int):
+            return self + b
+        return NotImplemented
 
     def __sub__(self, b):
         if isinstance(b, int):
@@ -187,7 +189,7 @@ class Fraction:
 
     def __lt__(self, b):
         if isinstance(b, int):
-            other = Fraction(b)
+            b = Fraction(b)
         if isinstance(b, Fraction):
             return self._z * b._n < b._z * self._n
         return NotImplemented
