@@ -1,6 +1,83 @@
-__author__ = 'Danijel Stamenkovic'
+import functools
+
+
+@functools.total_ordering
 
 class Fraction:
+
+    """
+    Klasse für Bruchzahlen
+
+    Doctest-Beispiele:
+
+    >>> b0 = Fraction()
+    >>> repr(b0)
+    'Fraction(0, 1)'
+    >>> print(b0)
+    0/1
+
+    >>> b1 = Fraction(5)
+    >>> repr(b1)
+    'Fraction(5, 1)'
+
+    >>> # Normales und gemischtes Format
+    >>> b2 = Fraction(3, 2)
+    >>> repr(b2)
+    'Fraction(3, 2)'
+    >>> print(b2)
+    1 1/2
+
+    >>> b3 = Fraction(-7, 3)
+    >>> print(b3)
+    -2 1/3
+
+    >>> b4 = Fraction(2, 4)
+    >>> repr(b4)
+    'Fraction(1, 2)'
+
+    >>> Fraction(1, 2) + Fraction(1, 4)
+    Fraction(3, 4)
+    >>> 1 + Fraction(2, 3)
+    Fraction(5, 3)
+    >>> Fraction(2, 3) + 1
+    Fraction(5, 3)
+
+    >>> # Subtraktion
+    >>> Fraction(3, 4) - Fraction(1, 2)
+    Fraction(1, 4)
+    >>> 2 - Fraction(3, 4)
+    Fraction(5, 4)
+
+    >>> # Multiplikation
+    >>> Fraction(2, 3) * Fraction(3, 4)
+    Fraction(1, 2)
+    >>> 3 * Fraction(1, 3)
+    Fraction(1, 1)
+
+    >>> # Division
+    >>> Fraction(3, 4) / Fraction(1, 2)
+    Fraction(3, 2)
+    >>> 1 / Fraction(1, 4)
+    Fraction(4, 1)
+
+    >>> try:
+    ...     Fraction(1, 2) / Fraction(0, 1)
+    ... except ValueError as e:
+    ...     print(type(e).__name__)
+    ValueError
+
+    >>> float(Fraction(3, 2))
+    1.5
+    >>> Fraction(3, 2).as_integer_ratio()
+    (3, 2)
+
+    >>> Fraction(1, 2) == Fraction(2, 4)
+    True
+    >>> Fraction(1, 2) < Fraction(2, 3)
+    True
+    >>> Fraction(4, 3) > Fraction(1, 1)
+    True
+    """
 
     def __init__(self, z=0, n=1):
         if n == 0:
@@ -9,8 +86,8 @@ class Fraction:
         if n < 0:
             z, n = -z, n
 
-        self.z = int(z)
-        self.n = int(n)
+        self._z = int(z)
+        self._n = int(n)
         self._reduce()
 
     @staticmethod
@@ -26,17 +103,17 @@ class Fraction:
             b = r
 
     def _reduce(self):
-        g = self.gcd(self.z, self.n)
-        self.z //= g
-        self.n //= g
+        g = self.gcd(self._z, self._n)
+        self._z //= g
+        self._n //= g
 
     @property
     def z(self):
-        return self.z
+        return self._z
 
     @property
     def n(self):
-        return self.n
+        return self._n
 
     def __repr__(self):
         return f"Fraction({self.z}, {self.n})"
@@ -44,7 +121,7 @@ class Fraction:
     def __str__(self):
         z, n = self._z, self._n
         if abs(z) >= n:
-            ganz = z // n
+            ganz = int (z / n)
             rest = abs(z) % n
             if rest:
                 return f"{ganz} {rest}/{n}"
@@ -53,14 +130,14 @@ class Fraction:
 
     def __add__(self, b):
         if isinstance(b, int):
-            other = Fraction(b)
+            b = Fraction(b)
         if isinstance(b, Fraction):
             z = self.z * b.n + b.z * self.n
             n = self.n * b.n
             return Fraction(z, n)
         return NotImplemented
 
-    def _radd__(self, b):
+    def __radd__(self, b):
         return self.__add__(b)
 
     def __sub__(self, b):
@@ -128,3 +205,7 @@ class Fraction:
     @n.setter
     def n(self, value):
         self._n = value
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(verbose=True)
