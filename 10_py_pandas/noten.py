@@ -93,6 +93,12 @@ def filter_faecher(df: pd.DataFrame, faecher: str) -> pd.DataFrame:
         filtered = pd.merge(filtered, schnitt, on="Nummer", how="left")
     return filtered
 
+def write_csv(df: pd.DataFrame, filename: str) -> None:
+    """
+    Schreibt einen DataFrame in eine CSV-Datei (UTF-8, ohne Index).
+    """
+    df.to_csv(filename, index=False, encoding="utf-8")
+
 
 if __name__ == "__main__":
     args = parse_args()
@@ -102,3 +108,5 @@ if __name__ == "__main__":
     noten_df = read_csv(args.n)
     merged_df = merge_dataframes(schueler_df, noten_df, args.m)
     filtered_df = filter_faecher(merged_df, args.f)
+    write_csv(filtered_df, args.outfile)
+
