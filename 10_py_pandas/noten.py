@@ -4,6 +4,8 @@ __author__ = "Danijel Stamenkovic"
 Hilfsprogramm zum Zusammenführen von Noten- und Schülerlisten.
 """
 
+import sys
+import os
 import argparse
 
 def parse_args():
@@ -22,5 +24,15 @@ def parse_args():
     parser.add_argument('outfile', help='Ausgabedatei (z.B. result.csv)')
     return parser.parse_args()
 
+def check_file_exists(filename: str) -> None:
+    """
+    Prüft, ob eine Datei existiert, sonst Fehlermeldung auf stderr und exit.
+    """
+    if filename and not os.path.isfile(filename):
+        print(f"Fehler: Datei '{filename}' nicht gefunden.", file=sys.stderr)
+        sys.exit(2)
+
 if __name__ == "__main__":
     args = parse_args()
+    check_file_exists(args.n)
+    check_file_exists(args.s)
