@@ -7,6 +7,7 @@ Hilfsprogramm zum Zusammenführen von Noten- und Schülerlisten.
 import sys
 import os
 import argparse
+import pandas as pd
 
 def parse_args():
     """
@@ -32,7 +33,24 @@ def check_file_exists(filename: str) -> None:
         print(f"Fehler: Datei '{filename}' nicht gefunden.", file=sys.stderr)
         sys.exit(2)
 
+def read_xml(filename: str) -> pd.DataFrame:
+    """
+    Liest Schülerdaten aus einer XML-Datei mit Regex aus und gibt einen DataFrame zurück.
+    Erwartete Felder: Nummer, Anrede, Vorname, Nachname, Geburtsdatum
+    """
+    with open(filename, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    pattern = re.compile(
+        r"<Schueler>\s*<Nummer>(\d+)</Nummer>\s*<Anrede>([^<]+)</Anrede>\s*<Vorname>([^<]+)</Vorname>\s*<Nachname>([^<]+)</Nachname>\s*<Geburtsdatum>([^<]+)</Geburtsdatum>\s*</Schueler>",
+        re.DOTALL
+    )
+    result = re.findall(pattern, content)
+    df = pd.DataFrame(result, columns=["Nummer", "Anrede", "Vorname", "Nachname", "Geburtsdatum"], dtype=str)
+    return df
+
 if __name__ == "__main__":
     args = parse_args()
     check_file_exists(args.n)
     check_file_exists(args.s)
+    schueler_df = read_xml(args.s)
