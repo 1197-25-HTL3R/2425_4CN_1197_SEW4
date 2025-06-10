@@ -99,6 +99,17 @@ def write_csv(df: pd.DataFrame, filename: str) -> None:
     """
     df.to_csv(filename, index=False, encoding="utf-8")
 
+def print_info(args, filtered_df: pd.DataFrame) -> None:
+    """
+    Gibt Information zur Verarbeitung abhängig von verbose/quiet aus.
+    """
+    if args.quiet:
+        return
+    if args.verbose:
+        print(f"csv-Datei mit den Noten : {args.n}")
+        print(f"xml-Datei mit den Schülerdaten : {args.s}")
+        print(f"Name der Spalte, die zu verknüpfen ist : {args.m}")
+    print(f"Output-Datei: {args.outfile}")
 
 if __name__ == "__main__":
     args = parse_args()
@@ -109,4 +120,7 @@ if __name__ == "__main__":
     merged_df = merge_dataframes(schueler_df, noten_df, args.m)
     filtered_df = filter_faecher(merged_df, args.f)
     write_csv(filtered_df, args.outfile)
+    filtered_df = filter_faecher(merged_df, args.f)
+    write_csv(filtered_df, args.outfile)
+    print_info(args, filtered_df)
 
