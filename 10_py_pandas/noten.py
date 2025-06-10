@@ -8,6 +8,7 @@ import sys
 import os
 import argparse
 import pandas as pd
+import re
 
 def parse_args():
     """
@@ -55,10 +56,26 @@ def read_csv(filename: str) -> pd.DataFrame:
     """
     return pd.read_csv(filename, dtype=str)
 
+def merge_dataframes(
+    df1: pd.DataFrame,
+    df2: pd.DataFrame,
+    key: str
+) -> pd.DataFrame:
+    """
+    Verknüpft zwei DataFrames über die angegebene Schlüsselsäule.
+    """
+    if key not in df1.columns or key not in df2.columns:
+        print(f"Fehler: Spalte '{key}' zum Verknüpfen nicht gefunden.", file=sys.stderr)
+        sys.exit(3)
+    merged = pd.merge(df1, df2, on=key, how="inner")
+    return merged
+
 if __name__ == "__main__":
     args = parse_args()
     check_file_exists(args.n)
     check_file_exists(args.s)
     schueler_df = read_xml(args.s)
     noten_df = read_csv(args.n)
+    merged_df = merge_dataframes(schueler_df, noten_df, args.m)
+
 
