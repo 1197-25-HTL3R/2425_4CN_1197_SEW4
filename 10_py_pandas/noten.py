@@ -49,8 +49,16 @@ def read_xml(filename: str) -> pd.DataFrame:
     df = pd.DataFrame(result, columns=["Nummer", "Anrede", "Vorname", "Nachname", "Geburtsdatum"], dtype=str)
     return df
 
+def read_csv(filename: str) -> pd.DataFrame:
+    """
+    Liest eine CSV-Datei mit Noten ein und gibt einen DataFrame zurück.
+    """
+    return pd.read_csv(filename, dtype=str)
+
 if __name__ == "__main__":
     args = parse_args()
     check_file_exists(args.n)
     check_file_exists(args.s)
     schueler_df = read_xml(args.s)
+    noten_df = read_csv(args.n)
+
